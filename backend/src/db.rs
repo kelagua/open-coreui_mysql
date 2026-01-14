@@ -1,23 +1,23 @@
 use sqlx::{
-    sqlite::{SqliteConnectOptions, SqlitePoolOptions},
-    SqlitePool,
+    mysql::{MySqlConnectOptions, MySqlPoolOptions},
+    MySqlPool,
 };
 use std::str::FromStr;
 use std::time::Duration;
 
-// Load SQLite schema from external file
-const SQLITE_SCHEMA: &str = include_str!("schema.sql");
+// Load MySQL schema from external file
+const MYSQL_SCHEMA: &str = include_str!("schema.sql");
 
 #[derive(Clone)]
 pub struct Database {
-    pub pool: SqlitePool,
+    pub pool: MySqlPool,
 }
 
 impl Database {
     pub async fn new(database_url: &str) -> anyhow::Result<Self> {
-        let connect_options = SqliteConnectOptions::from_str(database_url)?.create_if_missing(true);
+        let connect_options = MySqlConnectOptions::from_str(database_url)?;
 
-        let pool = SqlitePoolOptions::new()
+        let pool = MySqlPoolOptions::new()
             .max_connections(10)
             .min_connections(1)
             .acquire_timeout(Duration::from_secs(30))
@@ -33,7 +33,7 @@ impl Database {
         tracing::info!("Initializing database schema");
 
         // Parse and execute all SQL statements
-        let statements = Self::parse_sql_statements(SQLITE_SCHEMA);
+        let statements = Self::parse_sql_statements(MYSQL_SCHEMA);
         for (idx, statement) in statements.iter().enumerate() {
             let trimmed = statement.trim();
             if !trimmed.is_empty() && !trimmed.starts_with("--") {
@@ -84,7 +84,7 @@ impl Database {
         statements
     }
 
-    pub fn pool(&self) -> &SqlitePool {
+    pub fn pool(&self) -> &MySqlPool {
         &self.pool
     }
 

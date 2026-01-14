@@ -278,13 +278,10 @@ impl Config {
 
     /// Get default database path
     fn get_default_database_url(config_dir: &str) -> String {
-        let expanded_config_dir = Self::expand_home_dir(config_dir);
-        let db_path = PathBuf::from(&expanded_config_dir).join("data.sqlite3");
-
-        // Ensure config directory exists
-        let _ = std::fs::create_dir_all(&expanded_config_dir);
-
-        format!("sqlite://{}", db_path.to_string_lossy())
+        // Default MySQL connection string
+        // Format: mysql://username:password@host:port/database
+        // Users should set DATABASE_URL environment variable for production
+        "mysql://root:password@localhost:3306/opencoreui".to_string()
     }
 
     pub fn from_env() -> anyhow::Result<Self> {
