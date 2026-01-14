@@ -208,7 +208,7 @@ jobs:
           cd src-tauri
           cargo fetch --target ${{ matrix.target }}
           cd ..
-          cargo tauri build --target ${{ matrix.target }}
+          cargo tauri build --target ${{ matrix.target }} --no-sign
 
       - name: Build Desktop (Windows)
         if: runner.os == 'Windows'
@@ -221,7 +221,7 @@ jobs:
           cd src-tauri
           cargo fetch --target ${{ matrix.target }}
           cd ..
-          cargo tauri build --target ${{ matrix.target }}
+          cargo tauri build --target ${{ matrix.target }} --no-sign
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v5
